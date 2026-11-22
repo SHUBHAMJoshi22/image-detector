@@ -1,27 +1,23 @@
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 import torch
-from torchvision.models import efficientnet_b0, EfficientNet_B0_Weights
+
 from lightning_modules.detector import DeepfakeDetector
+from network import build_efficientnet_b0
 
-ckpt_path = "/project/models/best_model-v2.ckpt"
-pt_output = "/project/models/best_model-v2.pt"
+ckpt_path = "models/best_model_finetuned.ckpt"
+pt_output = "models/fine_tuned.pt"
 
-# Rebuild the same backbone as during training
-weights = EfficientNet_B0_Weights.IMAGENET1K_V1
-backbone = efficientnet_b0(weights=weights)
-num_features = backbone.classifier[1].in_features
-backbone.classifier = torch.nn.Sequential(
-    torch.nn.Dropout(0.4),
-    torch.nn.Linear(num_features, 2)
-)
-
-# Now load LightningModule with that model
+backbone = build_efficientnet_b0(dropout=0.4)
 model = DeepfakeDetector.load_from_checkpoint(
     ckpt_path,
     model=backbone,
-    lr=1e-4  # or whatever you used during training
+    lr_head=3e-4,
+    lr_backbone=3e-5,
 )
-
-# Save just the PyTorch model weights
+os.makedirs(os.path.dirname(pt_output), exist_ok=True)
 torch.save(model.model.state_dict(), pt_output)
-
 print(f"✅ Exported PyTorch model to {pt_output}")

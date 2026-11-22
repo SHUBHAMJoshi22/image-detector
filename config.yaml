@@ -1,19 +1,24 @@
-lr: 0.0001
-batch_size: 4
-num_epochs: 1
+seed: 42
+batch_size: 32
+num_epochs: 20
+phase1_epochs: 4
+freeze_until_block: 4
+
+# Head learns first; backbone stays much slower after unfreeze.
+lr_head: 0.0003
+lr_backbone: 0.00003
+weight_decay: 0.0001
+dropout: 0.4
+label_smoothing: 0.05
+
+base_weights: "models/best_model.pt"
 
 train_paths:
-  - C:/Datasets/1000_videos/train #train set path
-  - 
+  - "finetune_data/train"
 
 val_paths:
-  - C:/Datasets/1000_videos/validation # validation set path
-  - 
+  - "finetune_data/val"
 
-early_stopping_patience: 3  # Stop training if val_loss doesn’t improve after 3 epochs
-scheduler_factor: 0.5        # LR drops by half if stuck
-scheduler_patience: 2        # Wait 2 epochs before adjusting LR
-monitor_metric: val_loss     # Metric to monitor for callbacks
-
-log_every_n_steps: 1         # Show updates each batch
-save_top_k: 1                # Only keep the best model
+early_stopping_patience: 6
+log_every_n_steps: 10
+save_top_k: 1

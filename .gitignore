@@ -35,6 +35,10 @@ tensorboard_logs/
 # Data directories - exclude large dataset files from git
 data/
 !data/.gitkeep
+# Project datasets
+datasets/
+finetune_data/
+realworld/
 
 # Environment variables
 .env
@@ -69,3 +73,36 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.temp
+# Virtual environment
+myenv/
+venv/
+.venv/
+env/
+
+# Dataset files - keep Python loader
+datasets/*
+!datasets/hybrid_loader.py
+finetune_data/
+realworld/
+data/
+
+# Model weights
+*.pt
+*.pth
+*.ckpt
+*.onnx
+
+# Videos
+videos_to_predict/
+*.mp4
+*.avi
+*.mov
+
+# Training logs
+lightning_logs/
+logs/
+wandb/
+
+# Python cache
+__pycache__/
+*.pyc
